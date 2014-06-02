@@ -1,0 +1,15 @@
+cu -l /dev/ttyACM0 -s 9600
+ino serial -b 9600 -- --omap igncr --echo
+
+port is        : /dev/ttyACM0
+flowcontrol    : none
+baudrate is    : 9600
+parity is      : none
+databits are   : 8
+escape is      : C-m
+noinit is      : no
+noreset is     : no
+nolock is      : yes
+send_cmd is    : ascii_xfr -s -v -l10
+receive_cmd is : rz -vv
+
