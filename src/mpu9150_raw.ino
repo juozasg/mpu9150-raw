@@ -15,8 +15,8 @@ uint8_t data;
 
 uint32_t sample_started = 0;
 uint32_t now = 0;
-volatile int samples = 0;
-volatile int mag_samples = 0;
+volatile uint16_t samples = 0;
+volatile uint16_t mag_samples = 0;
 
 
 void setup()
@@ -71,7 +71,6 @@ void print_readings() {
   Serial.print(" ");
 
   Serial.print(convert_temp());
-
   print_accel();
   print_gyro();
   print_mag();
