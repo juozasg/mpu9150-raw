@@ -30,8 +30,9 @@ void setup()
   setup_direct_access();
 
   write_byte(MPU, ACCEL_CONFIG, 0x10);    // AFS_SEL = 2 (+- 8g)
-  // write_byte(MPU, SMPLRT_DIV, 0xFF);    // slow it down
-  // TODO: LPF
+  //write_byte(MPU, ACCEL_CONFIG, 0x0);    // AFS_SEL = 2 (+- 2g)
+  // write_byte(MPU, SMPLRT_DIV, 3);    // slow it down
+  // write_byte(MPU, CONFIG, 2); // 1=mild, 6=highest DLPF
 
   write_byte(MAG, MAG_CNTL, 0x01); // power on MAG in single measurement mode
 }
