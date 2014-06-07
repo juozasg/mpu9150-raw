@@ -8,10 +8,12 @@ int MAG = 0x0C;
 
 // //Variables where our values can be stored
 int16_t cmps[3];
+int16_t last_good_cmps[3];
 int16_t accl[3];
 int16_t gyro[3];
 int16_t temp;
 uint8_t data;
+uint8_t error;
 
 uint32_t sample_started = 0;
 uint32_t now = 0;
@@ -30,7 +32,7 @@ void setup()
   setup_direct_access();
 
   write_byte(MPU, ACCEL_CONFIG, 0x10);    // AFS_SEL = 2 (+- 8g)
-  //write_byte(MPU, ACCEL_CONFIG, 0x0);    // AFS_SEL = 2 (+- 2g)
+  write_byte(MPU, GYRO_CONFIG, 0x18);    // FS_SEL = 3 (+- 2000dps)
   // write_byte(MPU, SMPLRT_DIV, 3);    // slow it down
   // write_byte(MPU, CONFIG, 2); // 1=mild, 6=highest DLPF
 
@@ -53,13 +55,38 @@ void loop()
     samples++;
   }
 
+  read_mag();
+
+  print_readings();
+}
+
+void read_mag()
+{
+  // if DRDY
   if(read_byte(MAG, MAG_ST1) & 0x01) {
     read_bytes(MAG, MAG_XOUT_L, (uint8_t*) cmps, 6); // mag is little endian; reading powers it off
+
+    // check for DERR or HOFL
+    error = read_byte(MAG, MAG_ST2);
+    if((error & 0x0C) || compass_invalid_data()) {
+      // read error
+      cmps[0] = last_good_cmps[0];
+      cmps[1] = last_good_cmps[1];
+      cmps[2] = last_good_cmps[2];
+    }
+    else {
+      last_good_cmps[0] = cmps[0];
+      last_good_cmps[1] = cmps[1];
+      last_good_cmps[2] = cmps[2];
+    }
     write_byte(MAG, MAG_CNTL, 0x01); // power on with single-measure mode to read value later
     mag_samples ++;
   }
+}
 
-  print_readings();
+bool compass_invalid_data()
+{
+  return cmps[0] == -1 && cmps[1] == -1 && cmps[2] == -1;
 }
 
 void print_readings() {
@@ -107,6 +134,8 @@ void print_mag() {
   Serial.print(cmps[1]);
   Serial.print(" ");
   Serial.print(cmps[2]);
+  // Serial.print(" E");
+  // Serial.print(error);
 }
 
 double convert_temp() {

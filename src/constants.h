@@ -118,3 +118,4 @@
 #define MAG_YOUT_H   0x06
 #define MAG_ZOUT_L   0x07
 #define MAG_ZOUT_H   0x08
+#define MAG_ST2      0x09
