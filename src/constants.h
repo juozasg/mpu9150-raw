@@ -1,3 +1,5 @@
+#define MPU  0x68
+#define MAG  0x0C
 
 // Register names according to the datasheet.
 // According to the InvenSense document

@@ -1,11 +1,6 @@
 #include "constants.h"
 #include "i2c.h"
 
-int MPU = 0x68;
-int MAG = 0x0C;
-
-// i2c_data read_data;
-
 // //Variables where our values can be stored
 int16_t cmps[3];
 int16_t last_good_cmps[3];
